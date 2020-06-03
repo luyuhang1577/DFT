@@ -160,7 +160,7 @@ class Circuit:
         print("levelization with BFS")
 
 
-    def lev(self):
+    def lev_orgin(self):
         """
         Levelization.
         Based on gate type of the nodes and connection relationship between nodes,
@@ -193,6 +193,43 @@ class Circuit:
                                 max_lvl = i.unodes[j].lev
                         i.lev = max_lvl + 1
                         count -= 1
+        self.nodes_lev = sorted(self.nodes, key=lambda x: x.lev)
+
+        self.num_lvls = 0
+        for i in self.nodes_lev:
+            self.num_lvls = max(i.lev, self.num_lvls)
+
+        for j in range(self.num_lvls + 1):
+            self.lvls_list.append([])
+            for i in self.nodes_lev:
+                if i.lev == j:
+                    self.lvls_list[j].append(i)
+        
+    def lev(self):
+        """
+        Levelization.
+        Based on gate type of the nodes and connection relationship between nodes,
+        give every node a level information. Primary inputs have the loweset level, i.e., 0
+        """
+        ilist=set()
+        nextlist=set()
+        for i in self.nodes:
+            if i.gtype == 'IPT':
+                i.lev = 0
+                ilist.add(i)
+            else:
+                i.lev = -1
+        flag=1
+        while(flag):
+            for i in ilist:
+                for k in range(0, i.fout):
+                    if(i.dnodes[k].lev < i.lev+1):
+                        i.dnodes[k].lev = i.lev+1
+                        nextlist.add(i.dnodes[k])
+            if(not nextlist):
+                flag=0
+            ilist=nextlist
+            nextlist=set()  
         self.nodes_lev = sorted(self.nodes, key=lambda x: x.lev)
 
         self.num_lvls = 0
