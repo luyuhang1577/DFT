@@ -26,10 +26,12 @@ for ckt in all_ckts:
     # circuit.co_ob_info()
     circuit.get_hist("CC0", plot=False)
 '''
-ckt = "c5315"
+ckt = "c7552"
 circuit = Circuit(ckt)
 circuit.read_circuit()
-circuit.lev()
+circuit.lev_orgin()
+test=circuit.get_random_input_pattern()
+circuit.logic_sim(test)
 
 '''
 

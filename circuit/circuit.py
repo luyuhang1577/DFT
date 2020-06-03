@@ -147,7 +147,7 @@ class Circuit:
                     # TODO: debugging
                     if self.nodes[i].unodes[j] == None:
                         print(i, j, self.nodes[i].num)
-                        pdb.set_trace()
+#                        pdb.set_trace()
                     self.nodes[i].unodes[j].add_dnodes(self.nodes[i])
             else:
                 self.input_num_list.append(self.nodes[i].num)
@@ -222,7 +222,7 @@ class Circuit:
         flag=1
         while(flag):
             for i in ilist:
-                for k in range(0, i.fout):
+                for k in range(len(i.dnodes)):
                     if(i.dnodes[k].lev < i.lev+1):
                         i.dnodes[k].lev = i.lev+1
                         nextlist.add(i.dnodes[k])
@@ -241,7 +241,6 @@ class Circuit:
             for i in self.nodes_lev:
                 if i.lev == j:
                     self.lvls_list[j].append(i)
-
 
     def get_random_input_pattern(self):
         """
