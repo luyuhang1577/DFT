@@ -29,9 +29,10 @@ for ckt in all_ckts:
 ckt = "c7552"
 circuit = Circuit(ckt)
 circuit.read_circuit()
-circuit.lev_orgin()
+circuit.lev()
 test=circuit.get_random_input_pattern()
 circuit.logic_sim(test)
+
 
 '''
 
