@@ -17,16 +17,18 @@ def translator(src, dst):
     internal_list = []
 
     for item in f:
-        if item[0] == 'I':
-            input_list.append(item)
-        if item[0] == 'O':
-            output_list.append(item)
-        if item[0] == '0' or item[0] == '1'or item[0] == '2'\
-        or item[0] == '3'or item[0] == '4'or item[0] == '5'\
-        or item[0] == '6'or item[0] == '7'or item[0] == '8'\
-        or item[0] == '9':
-            internal_list.append(item)
-
+        try:
+            item[0]
+        except:
+            continue
+        if item[0] != '#':
+            if item[0] == 'I':
+                input_list.append(item)
+            if item[0] == 'O':
+                output_list.append(item)
+            if item.find('=')!=-1:
+                internal_list.append(item)
+    
     in_list = set()
     for item in input_list:
         item=item.split('#')
@@ -57,33 +59,54 @@ def translator(src, dst):
             out = 7
         return out
 
+    finout={}
+    for item in internal_list:
+        item=item.split('#')
+        item=item[0]
+        item=re.findall('[0-9]+',item)
+        for number in item[1:]:
+            if number in finout:
+                finout[number]=finout[number]+1
+            else:
+                finout[number]=1
+
     ckt_set=list()
     for item in in_list:
-        node=[1,item,0,1,0]
+        if item in finout:
+            fino=finout[number]
+        else:
+            fino=1
+        node=[1,item,0,fino,0]
         ckt_set.append(node)
 
     for item in internal_list:
         item=item.split('#')
         item=item[0]
-        item=re.findall('[a-z0-9]+',item)
+        item=re.findall('[a-zA-Z0-9]+',item)
+        if item[0] in finout:
+            fino=finout[item[0]]
+        else:
+            fino=0
         if(item[0] in out_list):
             if(gate_index(item[1])==1):
                 node=[3,item[0],gate_index(item[1]),0,1,item[2]]
             else:
-                node=[3,item[0],gate_index(item[1]),1,len(item[2:])]+item[2:]
+                node=[3,item[0],gate_index(item[1]),0,len(item[2:])]+item[2:]
             out_list.remove(item[0])
         else:
             if(gate_index(item[1])==1):
                 node=[2,item[0],1,item[2]]
             else:
-                node=[0,item[0],gate_index(item[1]),1,len(item[2:])]+item[2:]
+                node=[0,item[0],gate_index(item[1]),fino,len(item[2:])]+item[2:]
         ckt_set.append(node)
+
     for item in out_list:
         if(item in in_list):
             node=[3,item,0,0,0]
             ckt_set.append(node)
         else:
-            print("error input")
+            print("error input",item)
+    
     output_write=[]
     for item in ckt_set:
         item2 = [str(x) for x in item]
@@ -93,6 +116,9 @@ def translator(src, dst):
     fv.writelines(output_write)
     fv.close()
 
+translator("c432", "c432.ckt")
+translator("c499", "c499.ckt")
+translator("c2670", "c2670.ckt")
 translator("c2670", "c2670.ckt")
 translator("c3540", "c3540.ckt")
 translator("c5315", "c5315.ckt")

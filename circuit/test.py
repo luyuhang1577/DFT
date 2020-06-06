@@ -4,7 +4,7 @@ from circuit import Circuit
 from atpg_v0 import ATPG
 import pdb
 import networkx as nx
-
+import time
 import sys
 sys.path.insert(1, "../data/netlist_behavioral")
 from c432_logic_sim import c432_sim
@@ -26,7 +26,7 @@ for ckt in all_ckts:
     # circuit.co_ob_info()
     circuit.get_hist("CC0", plot=False)
 '''
-ckt = "c7552"
+ckt = "c499"
 circuit = Circuit(ckt)
 circuit.read_circuit()
 circuit.lev()
